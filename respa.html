@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kazakhstan Math Olympiads</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 30px 0;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .olympiads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .olympiad-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .olympiad-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .card-icon {
+            font-size: 2em;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f0f0;
+            border-radius: 50%;
+        }
+
+        .card-title {
+            font-size: 1.4em;
+            color: #333;
+            margin: 0;
+        }
+
+        .card-category {
+            display: inline-block;
+            padding: 5px 12px;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .card-description {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .card-details {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .card-details.active {
+            display: block;
+        }
+
+        .detail-item {
+            margin: 10px 0;
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .toggle-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            background: #764ba2;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .olympiads-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-buttons {
+                gap: 8px;
+            }
+
+            .filter-btn {
+                padding: 8px 15px;
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏆 Kazakhstan Math Olympiads</h1>
+            <p>Comprehensive Guide to Mathematical Competitions</p>
+        </header>
+
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="national">National</button>
+            <button class="filter-btn" data-filter="international">International</button>
+        </div>
+
+        <div class="olympiads-grid" id="olympiadsGrid"></div>
+
+        <footer>
+            <p>&copy; 2024 Kazakhstan Mathematics Education. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        const olympiads = [
+            {
+                id: 1,
+                title: "School-District-Regional-National Olympiad",
+                icon: "📚",
+                category: "national",
+                shortDesc: "The primary mathematical competition system in Kazakhstan",
+                fullDesc: `The School-District-Regional-National Olympiad is a comprehensive four-tier competition system:
+                • School Level: Internal school competitions
+                • District Level: Competition between schools in a district
+                • Regional Level: Best students from districts compete
+                • National Level: Top students from all regions participate
+                This hierarchical system identifies mathematical talent across the country.`,
+                level: "All Grade Levels",
+                frequency: "Annual",
+                participants: "Hundreds of thousands",
+                established: "Soviet era, continues today"
+            },
+            {
+                id: 2,
+                title: "KBO Senior Olympiad",
+                icon: "⭐",
+                category: "national",
+                shortDesc: "Kazakhstan's Mathematical Olympiad for high school students",
+                fullDesc: `The KBO (Қазақстан Математика Олимпиадасы) is Kazakhstan's premier mathematical competition:
+                • Exclusively for senior students (grades 10-11)
+                • Prestigious national recognition
+                • Selection of winners for international competitions
+                • High difficulty level requiring advanced problem-solving
+                • Strong emphasis on pure mathematical thinking`,
+                level: "Grades 10-11",
+                frequency: "Annual",
+                participants: "2,000+",
+                established: "Modern Kazakhstan education system"
+            },
+            {
+                id: 3,
+                title: "Iranian Mathematical Olympiad",
+                icon: "🌏",
+                category: "international",
+                shortDesc: "International competition with Central Asian participation",
+                fullDesc: `The Iranian Mathematical Olympiad includes regional participation:
+                • Open to students from neighboring countries
+                • Kazakhstan regularly sends representative teams
+                • High international standard of difficulty
+                • Cultural exchange between Central Asian mathematicians
+                • Problems translated and discussed across region
+                • Excellent preparation for IMO`,
+                level: "High School",
+                frequency: "Annual",
+                participants: "Multiple countries",
+                established: "1990s"
+            },
+            {
+                id: 4,
+                title: "APMO & SRPMC",
+                icon: "🌍",
+                category: "international",
+                shortDesc: "Asian Pacific and Silk Road Mathematics Competitions",
+                fullDesc: `Two major international competitions:
+                
+APMO (Asian Pacific Mathematical Olympiad):
+                • 42 countries from Asia-Pacific region
+                • 5-problem examination format
+                • Accessible difficulty progression
+                • Kazakhstan participates annually
+
+SRPMC (Silk Road Regional Mathematics Competition):
+                • Focuses on Central and South Asian countries
+                • Recently established for regional cooperation
+                • High standard comparable to IMO
+                • Growing platform for Kazakh mathematicians`,
+                level: "High School",
+                frequency: "Annual",
+                participants: "40+ countries",
+                established: "APMO: 1989, SRPMC: 2020"
+            },
+            {
+                id: 5,
+                title: "Sharygin Geometry Olympiad",
+                icon: "📐",
+                category: "international",
+                shortDesc: "International pure geometry competition",
+                fullDesc: `Named after famous Russian mathematician Igor Sharygin:
+                • Exclusively geometry problems
+                • Includes both plane and solid geometry
+                • Remote participation available online
+                • Two rounds: correspondence and in-person
+                • Celebrates classical geometry approaches
+                • Kazakhstan has strong tradition in geometry
+                • Open to all countries, high international level`,
+                level: "Middle & High School",
+                frequency: "Annual",
+                participants: "50+ countries",
+                established: "2005"
+            },
+            {
+                id: 6,
+                title: "Euler Olympiad",
+                icon: "🔢",
+                category: "national",
+                shortDesc: "Mathematics competition for younger students",
+                fullDesc: `Named after great mathematician Leonhard Euler:
+                • Designed for middle school students
+                • Focuses on recreational mathematics
+                • Encourages problem-solving creativity
+                • Covers: combinatorics, number theory, geometry
+                • Less formal than senior olympiads
+                • Excellent stepping stone to advanced competitions
+                • Regional and national stages
+                • Emphasizes mathematical discovery`,
+                level: "Grades 5-9",
+                frequency: "Annual",
+                participants: "Thousands",
+                established: "Recent addition to Kazakhstan system"
+            }
+        ];
+
+        const grid = document.getElementById('olympiadsGrid');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        let currentFilter = 'all';
+
+        function renderCards(filter = 'all') {
+            grid.innerHTML = '';
+            const filtered = filter === 'all' ? olympiads : olympiads.filter(o => o.category === filter);
+            
+            filtered.forEach(olympiad => {
+                const card = document.createElement('div');
+                card.className = 'olympiad-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="card-icon">${olympiad.icon}</div>
+                        <h3 class="card-title">${olympiad.title}</h3>
+                    </div>
+                    <span class="card-category">${olympiad.category.toUpperCase()}</span>
+                    <p class="card-description">${olympiad.shortDesc}</p>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">View Details</button>
+                    <div class="card-details">
+                        <p style="margin-bottom: 15px; color: #444; line-height: 1.8;">${olympiad.fullDesc}</p>
+                        <div class="detail-item"><span class="detail-label">Level:</span> ${olympiad.level}</div>
+                        <div class="detail-item"><span class="detail-label">Frequency:</span> ${olympiad.frequency}</div>
+                        <div class="detail-item"><span class="detail-label">Participants:</span> ${olympiad.participants}</div>
+                        <div class="detail-item"><span class="detail-label">Established:</span> ${olympiad.established}</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleDetails(btn) {
+            const details = btn.nextElementSibling;
+            details.classList.toggle('active');
+            btn.textContent = details.classList.contains('active') ? 'Hide Details' : 'View Details';
+        }
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                renderCards(currentFilter);
+            });
+        });
+
+        renderCards();
+    </script>
+</body>
+</html>
